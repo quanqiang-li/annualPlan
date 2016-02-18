@@ -43,7 +43,7 @@ public class MakePlan {
 			HSSFRow row = sheet.getRow(date);
 			HSSFCell cell = row.createCell(month);
 			//HSSFCell cell = sheet.createRow(date).createCell(month);//这种方式下一个月份的行会把整个行覆盖掉
-			sheet.setColumnWidth(month, 2560);//256表示一个字节的长度
+			sheet.setColumnWidth(month, 4096);//256表示一个字节的长度,一个汉字两个字节，此处为16个字节
 			cell.setCellValue(getCellValue(instance));
 			//周末背景标红
 			String week = CalendarUtil.getWeek(instance);
