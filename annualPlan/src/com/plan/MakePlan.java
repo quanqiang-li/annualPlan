@@ -76,9 +76,11 @@ public class MakePlan {
 		PropertyUtil propertyUtil = PropertyUtil.getInstance();
 		String solar = propertyUtil.properties.getProperty(CalendarUtil.getStyleDate(instance, "MMdd"),"");//阳历节日
 		String lunar = propertyUtil.properties.getProperty(lunarCalendar,"");//农历节日
+		String dayGanzhi = CalendarUtil.getDayGanzhi(instance);
+		String luckyTimeOfDay = CalendarUtil.getLuckyTimeOfDay(instance);
 		//显示的农历只要后两位即可,如果是初一则显示农历月份
 		lunarCalendar = lunarCalendar.substring(2).equals("初一") ? lunarCalendar.substring(0,2) : lunarCalendar.substring(2);
-		String value = lunarCalendar + solar + lunar;
+		String value = lunarCalendar + solar + lunar + dayGanzhi + luckyTimeOfDay;
 		System.out.println(value);
 		return value;
 	}

@@ -25,21 +25,27 @@ public class CalendarUtil {
 								   {"辰","3-5,7-11,15-19,21-23"},{"戌","3-5,7-11,15-19,21-23"},
 								   {"巳","1-3,7-9,11-15,19-23"},{"亥","1-3,7-9,11-15,19-23"}
 									};
+	/**
+	 * 天月德,每个月(二十四节气代表的月)按顺序列出:天德,天德合,月德,月德合
+	 */
+	public static String[][] tianYueDe = {{"正月","丁壬丙辛"},{"二月","申巳甲己"},{"三月","壬丁壬丁"},
+										  {"四月","辛丙庚乙"},{"五月","亥寅丙辛"},{"六月","甲己甲己"},
+											{"七月","癸戊壬丁"},{"八月","寅亥庚乙"},{"九月","丙辛丙辛"},
+											{"十月","乙庚甲己"},{"冬月","巳申壬丁"},{"腊月","庚乙庚乙"}};
+	/**
+	 * 二十四节气代表的农历月份,每个月,按顺序列出,先节后气
+	 */
+	public static String[][] jieQi ={{"正月","立春雨水"},{"二月","惊蛰春分"},{"三月","清明谷雨"},
+		  							{"四月","立夏小满"},{"五月","芒种夏至"},{"六月","小暑大暑"},
+		  							{"七月","立秋处暑"},{"八月","白露秋分"},{"九月","寒露霜降"},
+		  							{"十月","立冬小雪"},{"冬月","大雪冬至"},{"腊月","小寒大寒"}};
 	
-
-
 	public static void main(String[] args) throws ParseException {
 
 		Calendar instance = Calendar.getInstance();
 		instance.clear();
 		instance.set(2016, 1, 18);
-		String dayGanzhi = getDayGanzhi(instance);
-		String diZhi = dayGanzhi.substring(1);
-		for(int i = 0;i<luckyTime.length;i++){
-			if(diZhi.equals(luckyTime[i][0])){
-				System.out.println(luckyTime[i][1]);
-			}
-		}
+		System.out.println("bba".indexOf("b", 1));
 	}
 	/**
 	 * 根据指定样式把日历转换成字符串
@@ -86,6 +92,7 @@ public class CalendarUtil {
 		String[] nodes = keys.split(",");
 		String[] nodeValues = values.split(",");
 		int index = 0;
+		//从大的往小的方向找,第一个小于等于给定日的即为需要的
 		for(int i = nodes.length-1;i>=0;i--){
 			if(nodes[i].compareTo(date) <= 0){
 				index = i;//月份确认
@@ -128,5 +135,96 @@ public class CalendarUtil {
 			value = value + 60;
 		}
 		return ganzhi[value];
+	}
+	/**
+	 * 获取指定日的吉时<br>
+	 * 首先获取指定日的干支,然后再获取干支中的地支对应的吉时
+	 * @param calendar
+	 * @return
+	 */
+	public static String getLuckyTimeOfDay(Calendar calendar){
+		String dayGanzhi = getDayGanzhi(calendar);
+		String diZhi = dayGanzhi.substring(1);
+		String jiShi = "未知";
+		for(int i = 0;i<luckyTime.length;i++){
+			if(diZhi.equals(luckyTime[i][0])){
+				jiShi = luckyTime[i][1];
+				break;
+			}
+		}
+		return jiShi;
+	}
+	/**
+	 * 获取指定日的天月德情况<br>
+	 * 找到给定年份所有节气对应的日历,称为节点日,首尾各补充一个,方便计算<br>
+	 * 找到小于等于且最接近给定日的节点日,然后确认该节点日(节气)代表的月份<br>
+	 * 最后验证给定日的干支是否包含月份的天月德
+	 * @param calendar
+	 * @return
+	 */
+	public static String getTianYueDeofDay(Calendar calendar){
+		String month = "";//节气代表的月份
+		String tyd = "";//节气月份天月德
+		String date = getStyleDate(calendar, "yyyyMMdd");
+		int year = calendar.get(Calendar.YEAR);
+		PropertyUtil propertyUtil = PropertyUtil.getInstance();
+		String keys = propertyUtil.properties.getProperty(year + "jieQiKey","");
+		String values = propertyUtil.properties.getProperty(year + "jieQiValue","");
+		String[] nodes = keys.split(",");
+		String[] nodeValues = values.split(",");
+		int index = 0;
+		//从大的往小的方向找,第一个小于等于给定日的即为需要的
+		for(int i = nodes.length-1;i>=0;i--){
+			if(nodes[i].compareTo(date) <= 0){
+				index = i;//节点日确认
+				break;
+			}
+		}
+		//节气
+		String value = nodeValues[index];
+		//节气代表的月份
+		for(int i = 0;i<jieQi.length;i++){
+			if(jieQi[i][1].contains(value)){
+				month = jieQi[i][0];
+				break;
+			}
+		}
+		//节气月份的天月德
+		for(int i = 0;i<tianYueDe.length;i++){
+			if(tianYueDe[i][0].equals(value)){
+				tyd = tianYueDe[i][1];
+				break;
+			}
+		}
+		//给定日的干支
+		String dayGanzhi = getDayGanzhi(calendar);
+		String tiangan  = dayGanzhi.substring(0, 1);
+		String dizhi  = dayGanzhi.substring(1, 2);
+		int fromIndex = 0;
+		while(true){
+			int indexOf = tyd.indexOf(tiangan, fromIndex);
+			if(indexOf < 0){
+				break;
+			}
+			switch (indexOf) {
+			case 0:
+				dizhi = "天德";
+				break;
+			case 1:
+				dizhi = "天德合";
+				break;
+			case 2:
+				dizhi = "月德";
+				break;
+			case 3:
+				dizhi = "月德合";
+				break;
+			default:
+				break;
+			}
+			fromIndex = indexOf + 1;
+		}
+		
+		return null;
 	}
 }
