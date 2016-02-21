@@ -24,6 +24,9 @@ public class MakePlan {
 
 	public static void main(String[] args) throws Exception {
 		int yearNum = 2016;// 设置年度年度
+		if(args.length>0){
+			yearNum = Integer.valueOf(args[0]);
+		}
 		Calendar instance = Calendar.getInstance();
 		instance.clear();//必须清空,不然会受到时分秒带来的影响
 		instance.set(yearNum, 0, 1);// 月份是从0开始计数
@@ -77,10 +80,28 @@ public class MakePlan {
 		String solar = propertyUtil.properties.getProperty(CalendarUtil.getStyleDate(instance, "MMdd"),"");//阳历节日
 		String lunar = propertyUtil.properties.getProperty(lunarCalendar,"");//农历节日
 		String dayGanzhi = CalendarUtil.getDayGanzhi(instance);
+		String xingXiu = CalendarUtil.getXingXiu(instance);
+		String tianYueDeofDay = CalendarUtil.getTianYueDeofDay(instance);
+		String jinFuJing = CalendarUtil.getJinFuJing(instance);
+		String jinShenQiSha = CalendarUtil.getJinShenQiSha(instance);
+		String yangGongJi = CalendarUtil.getYangGongJi(instance);
+		String yueJi = CalendarUtil.getYueJi(instance);
+		String hongZuiZhuQue = CalendarUtil.getHongZuiZhuQue(instance);
 		String luckyTimeOfDay = CalendarUtil.getLuckyTimeOfDay(instance);
 		//显示的农历只要后两位即可,如果是初一则显示农历月份
 		lunarCalendar = lunarCalendar.substring(2).equals("初一") ? lunarCalendar.substring(0,2) : lunarCalendar.substring(2);
-		String value = lunarCalendar + solar + lunar + dayGanzhi + luckyTimeOfDay;
+		String value = lunarCalendar 
+				+ solar 
+				+ lunar 
+				+ dayGanzhi 
+				+ xingXiu
+				+ tianYueDeofDay
+				+ jinFuJing
+				+ jinShenQiSha
+				+ yangGongJi
+				+ yueJi
+				+ hongZuiZhuQue
+				+ luckyTimeOfDay;
 		System.out.println(value);
 		return value;
 	}
