@@ -88,14 +88,21 @@ public class CalendarUtil {
 	/**
 	 * 十二建，划分好了黄黑道
 	 */
-	public static String shiErJian[] = {"建黑道","除黄道","满黑道","平黑道","定黄道","执黄道","破中黑","危黄道","成中黄","收黑道","开中黄","闭中黑"};
+	public static String shiErJians[] = {"建黑道","除黄道","满黑道","平黑道","定黄道","执黄道","破中黑","危黄道","成中黄","收黑道","开中黄","闭中黑"};
 	
+	/**
+	 * 地支的冲穿合
+	 */
+	public static String chongChuanHe[][] = {{"子","冲午穿未合丑"},{"丑","冲未穿午合子"},{"寅","冲申穿巳合亥"},{"卯","冲酉穿辰合戌"},
+											 {"辰","冲戌穿卯合酉"},{"巳","冲亥穿寅合申"},{"午","冲子穿丑合未"},{"未","冲丑穿子合午"},
+											 {"申","冲寅穿亥合巳"},{"酉","冲卯穿戌合辰"},{"戌","冲辰穿酉合卯"},{"亥","冲巳穿申合寅"}};
+ 	
 	public static void main(String[] args) throws ParseException {
 
 		Calendar instance = Calendar.getInstance();
 		instance.clear();
-		instance.set(2016, 0, 21);
-		System.out.println(isJie(instance));
+		instance.set(2016, 2, 12);
+		System.out.println(getChongChuanHe(instance));
 	}
 	/**
 	 * 根据指定样式把日历转换成字符串
@@ -515,8 +522,6 @@ public class CalendarUtil {
 	 * @author carl918@163.com
 	 */
 	public static String getShiErJian(Calendar calendar){
-		//判断日历是否为节，注意不包含气
-		boolean jie = isJie(calendar);
 		Calendar instance = Calendar.getInstance();
 		instance.clear();
 		instance.set(2016, 0, 1);
@@ -525,9 +530,43 @@ public class CalendarUtil {
 		}else if(calendar.compareTo(instance) == 0){
 			return "破中黑";
 		} else {
-			calendar.add(Calendar.DATE, -1);
-			getShiErJian(calendar);
+			Calendar preDate = (Calendar) calendar.clone();
+			preDate.add(Calendar.DATE, -1);
+			String shiErJian = getShiErJian(preDate);//获取前一天的十二建
+			//判断当天日历是否为节，注意不包含气
+			boolean jie = isJie(calendar);
+			if(jie){
+				//如果是节,直接用前一天的
+				//System.out.println(calendar.getTime() + shiErJian);
+				return shiErJian;
+			}else{
+				//不是节,向后加一个
+				//找到前一天十二建的索引,(索引+1)%12 注意循环
+				for (int i = 0; i < shiErJians.length; i++) {
+					if(shiErJians[i].equals(shiErJian)){
+						//System.out.println(calendar.getTime() + shiErJians[(i+1)%12]);
+						return shiErJians[(i+1)%12];
+					}
+				}
+			}
 		}
-		return null;
+		return "";
+	}
+	/**
+	 * 获取地支对应的冲穿合
+	 * @param calendar
+	 * @return
+	 */
+	public static String getChongChuanHe(Calendar calendar){
+		String dayGanzhi = getDayGanzhi(calendar);
+		String diZhi = dayGanzhi.substring(1);
+		String cch = "未知";
+		for (int i = 0; i < chongChuanHe.length; i++) {
+			if(chongChuanHe[i][0].equals(diZhi)){
+				cch = chongChuanHe[i][1];
+				break;
+			}
+		}
+		return cch;
 	}
 }

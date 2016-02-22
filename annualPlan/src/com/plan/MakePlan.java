@@ -80,7 +80,9 @@ public class MakePlan {
 		String solar = propertyUtil.properties.getProperty(CalendarUtil.getStyleDate(instance, "MMdd"),"");//阳历节日
 		String lunar = propertyUtil.properties.getProperty(lunarCalendar,"");//农历节日
 		String dayGanzhi = CalendarUtil.getDayGanzhi(instance);
+		String shiErJian = CalendarUtil.getShiErJian(instance);
 		String xingXiu = CalendarUtil.getXingXiu(instance);
+		String chongChuanHe = CalendarUtil.getChongChuanHe(instance);
 		String tianYueDeofDay = CalendarUtil.getTianYueDeofDay(instance);
 		String jinFuJing = CalendarUtil.getJinFuJing(instance);
 		String jinShenQiSha = CalendarUtil.getJinShenQiSha(instance);
@@ -94,7 +96,9 @@ public class MakePlan {
 				+ solar 
 				+ lunar 
 				+ dayGanzhi 
+				+ shiErJian
 				+ xingXiu
+				+ chongChuanHe
 				+ tianYueDeofDay
 				+ jinFuJing
 				+ jinShenQiSha
