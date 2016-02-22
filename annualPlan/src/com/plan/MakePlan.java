@@ -106,6 +106,10 @@ public class MakePlan {
 				+ yueJi
 				+ hongZuiZhuQue
 				+ luckyTimeOfDay;
+		if(value.contains("ª∆µ¿") && value.contains("º™–«") && !value.contains("∆ﬂ…∑") && !value.contains("∫Ï◊Ï÷Ï»∏") 
+				&& !value.contains("º…") && !value.contains("≥Â≥Û") && !value.contains("¥©≥Û")){
+			value = value + "ø…”√";
+		}
 		System.out.println(value);
 		return value;
 	}
